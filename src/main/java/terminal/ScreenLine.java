@@ -50,9 +50,7 @@ public class ScreenLine {
 
     public Cell insertCellAtPosition(Cell cell, int col) {
         Cell returned = currentLine[width - 1];
-        for (int i = width - 1; i > col; i--) {
-            currentLine[i] = currentLine[i - 1];
-        }
+        System.arraycopy(currentLine, col, currentLine, col + 1, width - 1 - col);
         currentLine[col] = cell;
         return returned;
     }
