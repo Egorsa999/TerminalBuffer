@@ -41,4 +41,17 @@ public class Scrollback {
         }
         return result.toString();
     }
+
+    public Scrollback insertLineAtBack(ScreenLine currentLine) {
+        if (invisibleScreen.size() == scrollbackLimit) {
+            invisibleScreen.removeFirst();
+        }
+        invisibleScreen.addLast(currentLine);
+        return this;
+    }
+
+    public Scrollback clearContent() {
+        invisibleScreen.clear();
+        return this;
+    }
 }

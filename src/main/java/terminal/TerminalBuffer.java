@@ -50,4 +50,21 @@ public class TerminalBuffer {
         return scrollback.getContent() +
                 screen.getContent();
     }
+
+    public TerminalBuffer insertEmptyLine() {
+        scrollback.insertLineAtBack(screen.eraseLineAtFront());
+        screen.insertEmptyLineAtBack();
+        return this;
+    }
+
+    public TerminalBuffer clearScreen() {
+        screen.clearContent();
+        return this;
+    }
+
+    public TerminalBuffer clearScreenAndScrollback() {
+        screen.clearContent();
+        scrollback.clearContent();
+        return this;
+    }
 }

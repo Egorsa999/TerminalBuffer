@@ -50,4 +50,20 @@ public class Screen {
         }
         return result.toString();
     }
+
+    public ScreenLine eraseLineAtFront() {
+        return screen.removeFirst();
+    }
+
+    public Screen insertEmptyLineAtBack() {
+        screen.addLast(new ScreenLine(width));
+        return this;
+    }
+
+    public Screen clearContent() {
+        for (ScreenLine obj : screen) {
+            obj.clearContent();
+        }
+        return this;
+    }
 }

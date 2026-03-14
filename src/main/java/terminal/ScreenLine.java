@@ -35,4 +35,11 @@ public class ScreenLine {
         }
         return result.toString();
     }
+
+    public ScreenLine clearContent() {
+        for (int i = 0; i < width; i++) {
+            currentLine[i] = Cell.DEFAULT;
+        }
+        return this;
+    }
 }

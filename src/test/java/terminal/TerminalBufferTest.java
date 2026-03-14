@@ -23,4 +23,18 @@ public class TerminalBufferTest {
         assertEquals("ERROR", buffer.getLineAsString(-1));
         assertEquals("ERROR", buffer.getLineAsString(2));
     }
+
+    @Test
+    void testNotDependFunctions() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.insertEmptyLine();
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenAndScrollbackContent());
+        buffer.clearScreen();
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenAndScrollbackContent());
+        buffer.clearScreenAndScrollback();
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenAndScrollbackContent());
+    }
 }
