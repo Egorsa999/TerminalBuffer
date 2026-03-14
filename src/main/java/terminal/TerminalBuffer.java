@@ -10,7 +10,7 @@ public class TerminalBuffer {
         this.screen = new Screen(width, height);
         this.attributes = Attributes.DEFAULT;
         this.scrollback = new Scrollback(scrollbackLimit);
-        this.cursor = new Cursor();
+        this.cursor = new Cursor(width, height);
     }
 
     public TerminalBuffer setAttr(Attributes newAttributes) {
@@ -65,6 +65,39 @@ public class TerminalBuffer {
     public TerminalBuffer clearScreenAndScrollback() {
         screen.clearContent();
         scrollback.clearContent();
+        return this;
+    }
+
+    public TerminalBuffer setCursorPosition(int newX, int newY) {
+        cursor.setXAndY(newX, newY);
+        return this;
+    }
+
+    public int getCursorX() {
+        return cursor.getX();
+    }
+
+    public int getCursorY() {
+        return cursor.getY();
+    }
+
+    public TerminalBuffer cursorUp(int step) {
+        this.cursor.moveUp(step);
+        return this;
+    }
+
+    public TerminalBuffer cursorDown(int step) {
+        this.cursor.moveDown(step);
+        return this;
+    }
+
+    public TerminalBuffer cursorRight(int step) {
+        this.cursor.moveRight(step);
+        return this;
+    }
+
+    public TerminalBuffer cursorLeft(int step) {
+        this.cursor.moveLeft(step);
         return this;
     }
 }

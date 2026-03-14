@@ -37,4 +37,60 @@ public class TerminalBufferTest {
         assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
         assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenAndScrollbackContent());
     }
+
+    @Test
+    void testCursorMoves() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 5, 10);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.cursorDown(2);
+
+        assertEquals(2, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.cursorDown(100);
+
+        assertEquals(4, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.cursorUp(3);
+
+        assertEquals(1, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.cursorUp(100);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.cursorRight(2);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(2, buffer.getCursorY());
+
+        buffer.cursorRight(100);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(4, buffer.getCursorY());
+
+        buffer.cursorLeft(3);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(1, buffer.getCursorY());
+
+        buffer.cursorLeft(100);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.setCursorPosition(20, 20);
+        assertEquals(4, buffer.getCursorX());
+        assertEquals(4, buffer.getCursorY());
+
+        buffer.setCursorPosition(2, 3);
+        assertEquals(2, buffer.getCursorX());
+        assertEquals(3, buffer.getCursorY());
+    }
 }
