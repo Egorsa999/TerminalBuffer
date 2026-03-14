@@ -54,6 +54,7 @@ public class TerminalBuffer {
     public TerminalBuffer insertEmptyLine() {
         scrollback.insertLineAtBack(screen.eraseLineAtFront());
         screen.insertEmptyLineAtBack();
+        cursor.moveUp(1);
         return this;
     }
 
@@ -98,6 +99,17 @@ public class TerminalBuffer {
 
     public TerminalBuffer cursorLeft(int step) {
         this.cursor.moveLeft(step);
+        return this;
+    }
+
+    public TerminalBuffer writeTextOverContent(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            screen.changeCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getX(), cursor.getY());
+            cursor.symbolWrote();
+            if (cursor.getX() == screen.height) {
+                insertEmptyLine();
+            }
+        }
         return this;
     }
 }

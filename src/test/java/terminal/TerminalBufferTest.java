@@ -93,4 +93,21 @@ public class TerminalBufferTest {
         assertEquals(2, buffer.getCursorX());
         assertEquals(3, buffer.getCursorY());
     }
+
+    @Test
+    void testWriteTextOverrideContent() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
+        buffer.writeTextOverContent("BOB");
+        assertEquals("[B][O][B][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
+        buffer.writeTextOverContent("BOB");
+        assertEquals("[B][O][B][B][O]\n[B][\0][\0][\0][\0]\n", buffer.getScreenContent());
+        buffer.writeTextOverContent("AAAAAAAAAAAA");
+        assertEquals("[A][A][A][A][A]\n[A][A][A][\0][\0]\n", buffer.getScreenContent());
+        assertEquals("[B][O][B][B][O]\n[B][A][A][A][A]\n[A][A][A][A][A]\n[A][A][A][\0][\0]\n", buffer.getScreenAndScrollbackContent());
+
+        buffer.setCursorPosition(1, 1);
+        buffer.writeTextOverContent("CC");
+        assertEquals("[B][O][B][B][O]\n[B][A][A][A][A]\n[A][A][A][A][A]\n[A][C][C][\0][\0]\n", buffer.getScreenAndScrollbackContent());
+    }
 }

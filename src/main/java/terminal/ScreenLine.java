@@ -42,4 +42,9 @@ public class ScreenLine {
         }
         return this;
     }
+
+    public ScreenLine changeCellAtPosition(Cell cell, int y) {
+        currentLine[y] = cell;
+        return this;
+    }
 }

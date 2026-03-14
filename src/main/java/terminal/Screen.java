@@ -66,4 +66,9 @@ public class Screen {
         }
         return this;
     }
+
+    public Screen changeCellAtPosition(Cell cell, int x, int y) {
+        DequeUtils.get(screen, x).changeCellAtPosition(cell, y);
+        return this;
+    }
 }

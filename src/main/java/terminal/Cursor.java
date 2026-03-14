@@ -54,4 +54,13 @@ public class Cursor {
         y = Math.max(y, 0);
         return this;
     }
+
+    public Cursor symbolWrote() {
+        y++;
+        if (y == width) {
+            x++;
+            y = 0;
+        }
+        return this;
+    }
 }
