@@ -80,4 +80,10 @@ public class Screen {
     public Cell insertCellAtPosition(Cell cell, int x, int y) {
         return DequeUtils.get(screen, x).insertCellAtPosition(cell, y);
     }
+
+    public Screen fillLineByCell(int x, Cell cell) {
+        if (x < 0 || x >= height) return this;
+        DequeUtils.get(screen, x).fillLineByCell(cell);
+        return this;
+    }
 }

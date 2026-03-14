@@ -153,4 +153,9 @@ public class TerminalBuffer {
         }
         return this;
     }
+
+    public TerminalBuffer fillLineByChar(int x, char symbol) {
+        screen.fillLineByCell(x, new Cell(symbol, attributes));
+        return this;
+    }
 }

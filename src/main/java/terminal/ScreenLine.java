@@ -56,4 +56,8 @@ public class ScreenLine {
         currentLine[y] = cell;
         return returned;
     }
+
+    public void fillLineByCell(Cell cell) {
+        Arrays.fill(currentLine, cell);
+    }
 }
