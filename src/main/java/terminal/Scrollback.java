@@ -12,25 +12,25 @@ public class Scrollback {
         invisibleScreen = new ArrayDeque<>();
     }
 
-    public char getCharAtPosition(int x, int y) {
-        if (invisibleScreen.size() + x < 0) {
+    public char getCharAtPosition(int col, int row) {
+        if (invisibleScreen.size() + row < 0) {
             return '#';
         }
-        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + x).getCharAtPosition(y);
+        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + row).getCharAtPosition(col);
     }
 
-    public Attributes getAttrAtPosition(int x, int y) {
-        if (invisibleScreen.size() + x < 0) {
+    public Attributes getAttrAtPosition(int col, int row) {
+        if (invisibleScreen.size() + row < 0) {
             return Attributes.DEFAULT;
         }
-        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + x).getAttrAtPosition(y);
+        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + row).getAttrAtPosition(col);
     }
 
-    public String getLineAsString(int x) {
-        if (invisibleScreen.size() + x < 0) {
+    public String getLineAsString(int row) {
+        if (invisibleScreen.size() + row < 0) {
             return "ERROR";
         }
-        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + x).getAsString();
+        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + row).getAsString();
     }
 
     public String getContent() {

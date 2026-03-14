@@ -22,27 +22,27 @@ public class TerminalBuffer {
         return this;
     }
 
-    public char getCharAtPosition(int x, int y) {
-        if (x >= 0) {
-            return screen.getCharAtPosition(x, y);
+    public char getCharAtPosition(int col, int row) {
+        if (row >= 0) {
+            return screen.getCharAtPosition(col, row);
         } else {
-            return scrollback.getCharAtPosition(x, y);
+            return scrollback.getCharAtPosition(col, row);
         }
     }
 
-    public Attributes getAttrAtPosition(int x, int y) {
-        if (x >= 0) {
-            return screen.getAttrAtPosition(x, y);
+    public Attributes getAttrAtPosition(int col, int row) {
+        if (row >= 0) {
+            return screen.getAttrAtPosition(col, row);
         } else {
-            return scrollback.getAttrAtPosition(x, y);
+            return scrollback.getAttrAtPosition(col, row);
         }
     }
 
-    public String getLineAsString(int x) {
-        if (x >= 0) {
-            return screen.getLineAsString(x);
+    public String getLineAsString(int row) {
+        if (row >= 0) {
+            return screen.getLineAsString(row);
         } else {
-            return scrollback.getLineAsString(x);
+            return scrollback.getLineAsString(row);
         }
     }
 
@@ -80,17 +80,17 @@ public class TerminalBuffer {
         return this;
     }
 
-    public TerminalBuffer setCursorPosition(int newX, int newY) {
-        cursor.setXAndY(newX, newY);
+    public TerminalBuffer setCursorPosition(int newCol, int newRow) {
+        cursor.setColAndRow(newCol, newRow);
         return this;
     }
 
-    public int getCursorX() {
-        return cursor.getX();
+    public int getCursorRow() {
+        return cursor.getRow();
     }
 
-    public int getCursorY() {
-        return cursor.getY();
+    public int getCursorCol() {
+        return cursor.getCol();
     }
 
     public TerminalBuffer cursorUp(int step) {
@@ -115,9 +115,9 @@ public class TerminalBuffer {
 
     public TerminalBuffer writeTextOverContent(String text) {
         for (int i = 0; i < text.length(); i++) {
-            screen.changeCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getX(), cursor.getY());
+            screen.changeCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getCol(), cursor.getRow());
             cursor.symbolWrote();
-            if (cursor.getX() == height) {
+            if (cursor.getRow() == height) {
                 insertEmptyLine();
             }
         }
@@ -125,37 +125,37 @@ public class TerminalBuffer {
     }
 
     public TerminalBuffer insertText(String text) {
-        boolean tempLineEmpty = true;
+        int tempLineSize = 0;
         ScreenLine tempLine = new ScreenLine(width);
         for (int i = 0; i < text.length(); i++) {
-            Cell returned = screen.insertCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getX(), cursor.getY());
+            Cell returned = screen.insertCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getCol(), cursor.getRow());
             if (returned != Cell.DEFAULT) {
-                int currentX = cursor.getX();
+                int currentRow = cursor.getRow();
                 do {
-                    currentX++;
-                    if (currentX == height) {
+                    currentRow++;
+                    if (currentRow == height) {
                         returned = tempLine.insertCellAtPosition(returned, 0);
-                        tempLineEmpty = false;
+                        tempLineSize++;
                     } else {
-                        returned = screen.insertCellAtPosition(returned, currentX, 0);
+                        returned = screen.insertCellAtPosition(returned, 0, currentRow);
                     }
                 } while (returned != Cell.DEFAULT);
             }
             cursor.symbolWrote();
-            if (cursor.getX() == height) {
+            if (cursor.getRow() == height || tempLineSize == width) {
                 insertLine(tempLine);
                 tempLine = new ScreenLine(width);
-                tempLineEmpty = true;
+                tempLineSize = 0;
             }
         }
-        if (!tempLineEmpty) {
+        if (tempLineSize > 0) {
             insertLine(tempLine);
         }
         return this;
     }
 
-    public TerminalBuffer fillLineByChar(int x, char symbol) {
-        screen.fillLineByCell(x, new Cell(symbol, attributes));
+    public TerminalBuffer fillLineByChar(int row, char symbol) {
+        screen.fillLineByCell(row, new Cell(symbol, attributes));
         return this;
     }
 }

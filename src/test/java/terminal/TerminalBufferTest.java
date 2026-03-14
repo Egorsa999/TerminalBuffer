@@ -10,16 +10,16 @@ public class TerminalBufferTest {
         TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
         assertEquals("[\0][\0][\0][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenContent());
         assertEquals('\0', buffer.getCharAtPosition(0, 0));
-        assertEquals('\0', buffer.getCharAtPosition(1, 4));
+        assertEquals('\0', buffer.getCharAtPosition(4, 1));
     }
 
     @Test
     void testContentAccessOutOfBounds() {
         TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
-        assertEquals('#', buffer.getCharAtPosition(2, 0));
-        assertEquals('#', buffer.getCharAtPosition(-1, 0));
-        assertEquals('#', buffer.getCharAtPosition(0, 5));
+        assertEquals('#', buffer.getCharAtPosition(0, 2));
         assertEquals('#', buffer.getCharAtPosition(0, -1));
+        assertEquals('#', buffer.getCharAtPosition(5, 0));
+        assertEquals('#', buffer.getCharAtPosition(-1, 0));
         assertEquals("ERROR", buffer.getLineAsString(-1));
         assertEquals("ERROR", buffer.getLineAsString(2));
     }
@@ -42,56 +42,56 @@ public class TerminalBufferTest {
     void testCursorMoves() {
         TerminalBuffer buffer = new TerminalBuffer(5, 5, 10);
 
-        assertEquals(0, buffer.getCursorX());
-        assertEquals(0, buffer.getCursorY());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorCol());
 
         buffer.cursorDown(2);
 
-        assertEquals(2, buffer.getCursorX());
-        assertEquals(0, buffer.getCursorY());
+        assertEquals(2, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorCol());
 
         buffer.cursorDown(100);
 
-        assertEquals(4, buffer.getCursorX());
-        assertEquals(0, buffer.getCursorY());
+        assertEquals(4, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorCol());
 
         buffer.cursorUp(3);
 
-        assertEquals(1, buffer.getCursorX());
-        assertEquals(0, buffer.getCursorY());
+        assertEquals(1, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorCol());
 
         buffer.cursorUp(100);
 
-        assertEquals(0, buffer.getCursorX());
-        assertEquals(0, buffer.getCursorY());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorCol());
 
         buffer.cursorRight(2);
 
-        assertEquals(0, buffer.getCursorX());
-        assertEquals(2, buffer.getCursorY());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(2, buffer.getCursorCol());
 
         buffer.cursorRight(100);
 
-        assertEquals(0, buffer.getCursorX());
-        assertEquals(4, buffer.getCursorY());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(4, buffer.getCursorCol());
 
         buffer.cursorLeft(3);
 
-        assertEquals(0, buffer.getCursorX());
-        assertEquals(1, buffer.getCursorY());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(1, buffer.getCursorCol());
 
         buffer.cursorLeft(100);
 
-        assertEquals(0, buffer.getCursorX());
-        assertEquals(0, buffer.getCursorY());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorCol());
 
         buffer.setCursorPosition(20, 20);
-        assertEquals(4, buffer.getCursorX());
-        assertEquals(4, buffer.getCursorY());
+        assertEquals(4, buffer.getCursorRow());
+        assertEquals(4, buffer.getCursorCol());
 
-        buffer.setCursorPosition(2, 3);
-        assertEquals(2, buffer.getCursorX());
-        assertEquals(3, buffer.getCursorY());
+        buffer.setCursorPosition(3, 2);
+        assertEquals(2, buffer.getCursorRow());
+        assertEquals(3, buffer.getCursorCol());
     }
 
     @Test
@@ -125,10 +125,10 @@ public class TerminalBufferTest {
         buffer.setCursorPosition(0, 0).insertText("AAA");
         assertEquals("[A][A][A][\0][\0]\n[\0][\0][\0][\0][\0]\n", buffer.getScreenAndScrollbackContent());
 
-        buffer.setCursorPosition(0, 2).insertText("BBB");
+        buffer.setCursorPosition(2, 0).insertText("BBB");
         assertEquals("[A][A][B][B][B]\n[A][\0][\0][\0][\0]\n", buffer.getScreenAndScrollbackContent());
 
-        buffer.setCursorPosition(0, 3).insertText("CCCCCCCCCCCCCC");
+        buffer.setCursorPosition(3, 0).insertText("CCCCCCCCCCCCCC");
         assertEquals("[A][A][B][C][C]\n[C][C][C][C][C]\n[C][C][C][C][C]\n[C][C][B][B][A]\n", buffer.getScreenAndScrollbackContent());
     }
 
@@ -143,12 +143,30 @@ public class TerminalBufferTest {
                 [E][E][E][E][E]
                 [\0][\0][\0][\0][\0]
                 """, buffer.getScreenAndScrollbackContent());
-        buffer.setCursorPosition(0, 4).insertText("123456");
+        buffer.setCursorPosition(4, 0).insertText("123456");
         assertEquals("""
                 [D][D][D][D][D]
                 [E][E][E][E][1]
                 [2][3][4][5][6]
                 [E][\0][\0][\0][\0]
+                """, buffer.getScreenAndScrollbackContent());
+    }
+
+    @Test
+    void testFinal() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 4, 2);
+        buffer.fillLineByChar(0, 'A');
+        buffer.fillLineByChar(1, 'A');
+        buffer.fillLineByChar(2, 'A');
+        buffer.fillLineByChar(3, 'C');
+        buffer.setCursorPosition(3, 3).insertText("B".repeat(25));
+        assertEquals("""
+                [C][C][C][B][B]
+                [B][B][B][B][B]
+                [B][B][B][B][B]
+                [B][B][B][B][B]
+                [B][B][B][B][B]
+                [B][B][B][C][C]
                 """, buffer.getScreenAndScrollbackContent());
     }
 }

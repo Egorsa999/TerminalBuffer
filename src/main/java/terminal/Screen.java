@@ -18,27 +18,27 @@ public class Screen {
         }
     }
 
-    public char getCharAtPosition(int x, int y) {
-        if (x >= height || y >= width || y < 0) {
+    public char getCharAtPosition(int col, int row) {
+        if (row >= height || col >= width || col < 0) {
             return '#';
         } else {
-            return DequeUtils.get(screen, x).getCharAtPosition(y);
+            return DequeUtils.get(screen, row).getCharAtPosition(col);
         }
     }
 
-    public Attributes getAttrAtPosition(int x, int y) {
-        if (x >= height || y >= width || y < 0) {
+    public Attributes getAttrAtPosition(int col, int row) {
+        if (row >= height || col >= width || col < 0) {
             return Attributes.DEFAULT;
         } else {
-            return DequeUtils.get(screen, x).getAttrAtPosition(y);
+            return DequeUtils.get(screen, row).getAttrAtPosition(col);
         }
     }
 
-    public String getLineAsString(int x) {
-        if (x >= height) {
+    public String getLineAsString(int row) {
+        if (row >= height) {
             return "ERROR";
         } else {
-            return DequeUtils.get(screen, x).getAsString();
+            return DequeUtils.get(screen, row).getAsString();
         }
     }
 
@@ -72,18 +72,18 @@ public class Screen {
         return this;
     }
 
-    public Screen changeCellAtPosition(Cell cell, int x, int y) {
-        DequeUtils.get(screen, x).changeCellAtPosition(cell, y);
+    public Screen changeCellAtPosition(Cell cell, int col, int row) {
+        DequeUtils.get(screen, row).changeCellAtPosition(cell, col);
         return this;
     }
 
-    public Cell insertCellAtPosition(Cell cell, int x, int y) {
-        return DequeUtils.get(screen, x).insertCellAtPosition(cell, y);
+    public Cell insertCellAtPosition(Cell cell, int col, int row) {
+        return DequeUtils.get(screen, row).insertCellAtPosition(cell, col);
     }
 
-    public Screen fillLineByCell(int x, Cell cell) {
-        if (x < 0 || x >= height) return this;
-        DequeUtils.get(screen, x).fillLineByCell(cell);
+    public Screen fillLineByCell(int row, Cell cell) {
+        if (row < 0 || row >= height) return this;
+        DequeUtils.get(screen, row).fillLineByCell(cell);
         return this;
     }
 }

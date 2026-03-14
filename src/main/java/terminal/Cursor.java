@@ -3,63 +3,63 @@ package terminal;
 public class Cursor {
     private final int width;
     private final int height;
-    private int x;
-    private int y;
+    private int row;
+    private int col;
 
     public Cursor(int width, int height) {
         this.width = width;
         this.height = height;
-        x = 0;
-        y = 0;
+        row = 0;
+        col = 0;
     }
 
     public Cursor moveDown(int step) {
-        x += step;
-        x = Math.min(x, height - 1);
+        row += step;
+        row = Math.min(row, height - 1);
         return this;
     }
 
     public Cursor moveUp(int step) {
-        x -= step;
-        x = Math.max(x, 0);
+        row -= step;
+        row = Math.max(row, 0);
         return this;
     }
 
     public Cursor moveRight(int step) {
-        y += step;
-        y = Math.min(y, width - 1);
+        col += step;
+        col = Math.min(col, width - 1);
         return this;
     }
 
     public Cursor moveLeft(int step) {
-        y -= step;
-        y = Math.max(y, 0);
+        col -= step;
+        col = Math.max(col, 0);
         return this;
     }
 
-    public int getX() {
-        return this.x;
+    public int getRow() {
+        return this.row;
     }
 
-    public int getY() {
-        return this.y;
+    public int getCol() {
+        return this.col;
     }
 
-    public Cursor setXAndY(int newX, int newY) {
-        x = newX;
-        y = newY;
-        x = Math.min(x, height - 1);
-        y = Math.min(y, width - 1);
-        x = Math.max(x, 0);
-        y = Math.max(y, 0);
+    public Cursor setColAndRow(int col, int row) {
+        this.row = row;
+        this.col = col;
+        this.row = Math.min(this.row, height - 1);
+        this.col = Math.min(this.col, width - 1);
+        this.row = Math.max(this.row, 0);
+        this.col = Math.max(this.col, 0);
         return this;
     }
 
     public Cursor symbolWrote() {
-        y++;
-        if (y == width) {
-            x++;
-            y = 0;
+        col++;
+        if (col == width) {
+            row++;
+            col = 0;
         }
         return this;
     }
