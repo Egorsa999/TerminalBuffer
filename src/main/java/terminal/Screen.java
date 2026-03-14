@@ -6,12 +6,12 @@ import java.util.Deque;
 public class Screen {
     private final int width;
     private final int height;
-    private final Deque<ScreenLine> screen;
+    private final RingBuffer screen;
 
     public Screen(int width, int height) {
         this.width = width;
         this.height = height;
-        screen = new ArrayDeque<>();
+        screen = new RingBuffer(height);
 
         for (int i = 0; i < height; i++) {
             this.screen.addLast(new ScreenLine(width));
@@ -22,7 +22,7 @@ public class Screen {
         if (row >= height || col >= width || col < 0) {
             return '#';
         } else {
-            return DequeUtils.get(screen, row).getCharAtPosition(col);
+            return screen.getAtPosition(row).getCharAtPosition(col);
         }
     }
 
@@ -30,7 +30,7 @@ public class Screen {
         if (row >= height || col >= width || col < 0) {
             return Attributes.DEFAULT;
         } else {
-            return DequeUtils.get(screen, row).getAttrAtPosition(col);
+            return screen.getAtPosition(row).getAttrAtPosition(col);
         }
     }
 
@@ -38,7 +38,7 @@ public class Screen {
         if (row >= height) {
             return "ERROR";
         } else {
-            return DequeUtils.get(screen, row).getAsString();
+            return screen.getAtPosition(row).getAsString();
         }
     }
 
@@ -66,24 +66,22 @@ public class Screen {
     }
 
     public Screen clearContent() {
-        for (ScreenLine obj : screen) {
-            obj.clearContent();
-        }
+        screen.clearContent();
         return this;
     }
 
     public Screen changeCellAtPosition(Cell cell, int col, int row) {
-        DequeUtils.get(screen, row).changeCellAtPosition(cell, col);
+        screen.getAtPosition(row).changeCellAtPosition(cell, col);
         return this;
     }
 
     public Cell insertCellAtPosition(Cell cell, int col, int row) {
-        return DequeUtils.get(screen, row).insertCellAtPosition(cell, col);
+        return screen.getAtPosition(row).insertCellAtPosition(cell, col);
     }
 
     public Screen fillLineByCell(int row, Cell cell) {
         if (row < 0 || row >= height) return this;
-        DequeUtils.get(screen, row).fillLineByCell(cell);
+        screen.getAtPosition(row).fillLineByCell(cell);
         return this;
     }
 }

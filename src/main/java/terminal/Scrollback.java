@@ -5,41 +5,36 @@ import java.util.Deque;
 
 public class Scrollback {
     private final int scrollbackLimit;
-    private final Deque<ScreenLine> invisibleScreen;
+    private final RingBuffer invisibleScreen;
 
     public Scrollback(int scrollbackLimit) {
         this.scrollbackLimit = scrollbackLimit;
-        invisibleScreen = new ArrayDeque<>();
+        invisibleScreen = new RingBuffer(scrollbackLimit);
     }
 
     public char getCharAtPosition(int col, int row) {
         if (invisibleScreen.size() + row < 0) {
             return '#';
         }
-        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + row).getCharAtPosition(col);
+        return invisibleScreen.getAtPosition(row).getCharAtPosition(col);
     }
 
     public Attributes getAttrAtPosition(int col, int row) {
         if (invisibleScreen.size() + row < 0) {
             return Attributes.DEFAULT;
         }
-        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + row).getAttrAtPosition(col);
+        return invisibleScreen.getAtPosition(row).getAttrAtPosition(col);
     }
 
     public String getLineAsString(int row) {
         if (invisibleScreen.size() + row < 0) {
             return "ERROR";
         }
-        return DequeUtils.get(invisibleScreen, invisibleScreen.size() + row).getAsString();
+        return invisibleScreen.getAtPosition(row).getAsString();
     }
 
     public String getContent() {
-        StringBuilder result = new StringBuilder();
-        for (ScreenLine obj : invisibleScreen) {
-            result.append(obj.getAsString());
-            result.append('\n');
-        }
-        return result.toString();
+        return invisibleScreen.getContent();
     }
 
     public Scrollback insertLineAtBack(ScreenLine currentLine) {
