@@ -153,7 +153,19 @@ public class TerminalBufferTest {
     }
 
     @Test
-    void testFinal() {
+    void testSpecialSymbols() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 4, 2);
+        buffer.insertText("Hello\n\rWorld");
+        assertEquals("""
+                [H][e][l][l][o]
+                [\0][\0][\0][\0][\0]
+                [W][o][r][l][d]
+                [\0][\0][\0][\0][\0]
+                """, buffer.getScreenAndScrollbackContent());
+    }
+
+    @Test
+    void testInsertText2() {
         TerminalBuffer buffer = new TerminalBuffer(5, 4, 2);
         buffer.fillLineByChar(0, 'A');
         buffer.fillLineByChar(1, 'A');

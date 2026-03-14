@@ -115,6 +115,20 @@ public class TerminalBuffer {
 
     public TerminalBuffer writeTextOverContent(String text) {
         for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '\r') {
+                cursor.setColAndRow(0, cursor.getRow());
+                continue;
+            }
+
+            if (text.charAt(i) == '\n') {
+                if (cursor.getRow() == height - 1) {
+                    insertEmptyLine();
+                } else {
+                    cursor.moveDown(1);
+                }
+                continue;
+            }
+
             screen.changeCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getCol(), cursor.getRow());
             cursor.symbolWrote();
             if (cursor.getRow() == height) {
@@ -128,6 +142,20 @@ public class TerminalBuffer {
         int tempLineSize = 0;
         ScreenLine tempLine = new ScreenLine(width);
         for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '\r') {
+                cursor.setColAndRow(0, cursor.getRow());
+                continue;
+            }
+
+            if (text.charAt(i) == '\n') {
+                if (cursor.getRow() == height - 1) {
+                    insertEmptyLine();
+                } else {
+                    cursor.moveDown(1);
+                }
+                continue;
+            }
+
             Cell returned = screen.insertCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getCol(), cursor.getRow());
             if (returned != Cell.DEFAULT) {
                 int currentRow = cursor.getRow();
