@@ -4,8 +4,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class Scrollback {
-    int scrollbackLimit;
-    Deque<ScreenLine> invisibleScreen;
+    private final int scrollbackLimit;
+    private final Deque<ScreenLine> invisibleScreen;
 
     public Scrollback(int scrollbackLimit) {
         this.scrollbackLimit = scrollbackLimit;

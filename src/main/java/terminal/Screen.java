@@ -4,9 +4,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class Screen {
-    int width;
-    int height;
-    Deque<ScreenLine> screen;
+    private final int width;
+    private final int height;
+    private final Deque<ScreenLine> screen;
 
     public Screen(int width, int height) {
         this.width = width;
@@ -55,8 +55,13 @@ public class Screen {
         return screen.removeFirst();
     }
 
+    public Screen insertLineAtBack(ScreenLine line) {
+        screen.addLast(line);
+        return this;
+    }
+
     public Screen insertEmptyLineAtBack() {
-        screen.addLast(new ScreenLine(width));
+        this.insertLineAtBack(new ScreenLine(width));
         return this;
     }
 
@@ -70,5 +75,9 @@ public class Screen {
     public Screen changeCellAtPosition(Cell cell, int x, int y) {
         DequeUtils.get(screen, x).changeCellAtPosition(cell, y);
         return this;
+    }
+
+    public Cell insertCellAtPosition(Cell cell, int x, int y) {
+        return DequeUtils.get(screen, x).insertCellAtPosition(cell, y);
     }
 }

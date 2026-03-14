@@ -1,12 +1,16 @@
 package terminal;
 
 public class TerminalBuffer {
-    Screen screen;
-    Attributes attributes;
-    Scrollback scrollback;
-    Cursor cursor;
+    private final int width;
+    private final int height;
+    private final Screen screen;
+    private Attributes attributes;
+    private final Scrollback scrollback;
+    private final Cursor cursor;
 
     public TerminalBuffer (int width, int height, int scrollbackLimit) {
+        this.width = width;
+        this.height = height;
         this.screen = new Screen(width, height);
         this.attributes = Attributes.DEFAULT;
         this.scrollback = new Scrollback(scrollbackLimit);
@@ -49,6 +53,13 @@ public class TerminalBuffer {
     public String getScreenAndScrollbackContent() {
         return scrollback.getContent() +
                 screen.getContent();
+    }
+
+    private TerminalBuffer insertLine(ScreenLine line) {
+        scrollback.insertLineAtBack(screen.eraseLineAtFront());
+        screen.insertLineAtBack(line);
+        cursor.moveUp(1);
+        return this;
     }
 
     public TerminalBuffer insertEmptyLine() {
@@ -106,9 +117,39 @@ public class TerminalBuffer {
         for (int i = 0; i < text.length(); i++) {
             screen.changeCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getX(), cursor.getY());
             cursor.symbolWrote();
-            if (cursor.getX() == screen.height) {
+            if (cursor.getX() == height) {
                 insertEmptyLine();
             }
+        }
+        return this;
+    }
+
+    public TerminalBuffer insertText(String text) {
+        boolean tempLineEmpty = true;
+        ScreenLine tempLine = new ScreenLine(width);
+        for (int i = 0; i < text.length(); i++) {
+            Cell returned = screen.insertCellAtPosition(new Cell(text.charAt(i), attributes), cursor.getX(), cursor.getY());
+            if (returned != Cell.DEFAULT) {
+                int currentX = cursor.getX();
+                do {
+                    currentX++;
+                    if (currentX == height) {
+                        returned = tempLine.insertCellAtPosition(returned, 0);
+                        tempLineEmpty = false;
+                    } else {
+                        returned = screen.insertCellAtPosition(returned, currentX, 0);
+                    }
+                } while (returned != Cell.DEFAULT);
+            }
+            cursor.symbolWrote();
+            if (cursor.getX() == height) {
+                insertLine(tempLine);
+                tempLine = new ScreenLine(width);
+                tempLineEmpty = true;
+            }
+        }
+        if (!tempLineEmpty) {
+            insertLine(tempLine);
         }
         return this;
     }

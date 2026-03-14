@@ -3,8 +3,8 @@ package terminal;
 import java.util.Arrays;
 
 public class ScreenLine {
-    int width;
-    Cell[] currentLine;
+    private final int width;
+    private final Cell[] currentLine;
 
     public ScreenLine(int width) {
         this.width = width;
@@ -46,5 +46,14 @@ public class ScreenLine {
     public ScreenLine changeCellAtPosition(Cell cell, int y) {
         currentLine[y] = cell;
         return this;
+    }
+
+    public Cell insertCellAtPosition(Cell cell, int y) {
+        Cell returned = currentLine[width - 1];
+        for (int i = width - 1; i > y; i--) {
+            currentLine[i] = currentLine[i - 1];
+        }
+        currentLine[y] = cell;
+        return returned;
     }
 }

@@ -1,8 +1,8 @@
 package terminal;
 
 public class Cursor {
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     private int x;
     private int y;
 
