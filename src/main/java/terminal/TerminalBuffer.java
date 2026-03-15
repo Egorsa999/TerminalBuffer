@@ -113,19 +113,25 @@ public class TerminalBuffer {
         return this;
     }
 
+    public boolean specialSymbol(char symbol) {
+        if (symbol == '\r') {
+            cursor.setColAndRow(0, cursor.getRow());
+            return true;
+        }
+
+        if (symbol == '\n') {
+            if (cursor.getRow() == height - 1) {
+                insertEmptyLine();
+            }
+            cursor.moveDown(1);
+            return true;
+        }
+        return false;
+    }
+
     public TerminalBuffer writeTextOverContent(String text) {
         for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == '\r') {
-                cursor.setColAndRow(0, cursor.getRow());
-                continue;
-            }
-
-            if (text.charAt(i) == '\n') {
-                if (cursor.getRow() == height - 1) {
-                    insertEmptyLine();
-                } else {
-                    cursor.moveDown(1);
-                }
+            if (specialSymbol(text.charAt(i))) {
                 continue;
             }
 
@@ -142,17 +148,7 @@ public class TerminalBuffer {
         int tempLineSize = 0;
         ScreenLine tempLine = new ScreenLine(width);
         for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == '\r') {
-                cursor.setColAndRow(0, cursor.getRow());
-                continue;
-            }
-
-            if (text.charAt(i) == '\n') {
-                if (cursor.getRow() == height - 1) {
-                    insertEmptyLine();
-                } else {
-                    cursor.moveDown(1);
-                }
+            if (specialSymbol(text.charAt(i))) {
                 continue;
             }
 
