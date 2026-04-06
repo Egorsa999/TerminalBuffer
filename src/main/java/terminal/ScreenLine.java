@@ -12,18 +12,18 @@ public class ScreenLine {
         Arrays.fill(this.currentLine, Cell.DEFAULT);
     }
 
-    public char getCharAtPosition(int y) {
-        if (y < 0 || y >= width) {
+    public char getCharAtPosition(int col) {
+        if (col < 0 || col >= width) {
             return '#';
         }
-        return currentLine[y].symbol();
+        return currentLine[col].symbol();
     }
 
-    public Attributes getAttrAtPosition(int y) {
-        if (y < 0 || y >= width) {
+    public Attributes getAttrAtPosition(int col) {
+        if (col < 0 || col >= width) {
             return Attributes.DEFAULT;
         }
-        return currentLine[y].attributes();
+        return currentLine[col].attributes();
     }
 
     public String getAsString() {
@@ -43,17 +43,15 @@ public class ScreenLine {
         return this;
     }
 
-    public ScreenLine changeCellAtPosition(Cell cell, int y) {
-        currentLine[y] = cell;
+    public ScreenLine changeCellAtPosition(Cell cell, int col) {
+        currentLine[col] = cell;
         return this;
     }
 
-    public Cell insertCellAtPosition(Cell cell, int y) {
+    public Cell insertCellAtPosition(Cell cell, int col) {
         Cell returned = currentLine[width - 1];
-        for (int i = width - 1; i > y; i--) {
-            currentLine[i] = currentLine[i - 1];
-        }
-        currentLine[y] = cell;
+        System.arraycopy(currentLine, col, currentLine, col + 1, width - 1 - col);
+        currentLine[col] = cell;
         return returned;
     }
 
